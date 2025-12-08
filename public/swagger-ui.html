@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui.min.css"
+      href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.18.3/swagger-ui.css"
     />
     <style>
       html {
@@ -27,18 +27,18 @@
   </head>
   <body>
     <div id="swagger-ui"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.18.3/swagger-ui-bundle.js"></script>
     <script>
       window.onload = function () {
-        const spec = {
+        window.ui = SwaggerUIBundle({
           url: '/swagger.json',
-        };
-        if (window.SwaggerUIBundle) {
-          window.ui = window.SwaggerUIBundle(spec);
-        } else if (window.SwaggerUIStandalonePreset) {
-          window.ui = SwaggerUIBundle(spec);
-        }
+          dom_id: '#swagger-ui',
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIBundle.SwaggerUIStandalonePreset,
+          ],
+          layout: 'StandaloneLayout',
+        });
       };
     </script>
   </body>

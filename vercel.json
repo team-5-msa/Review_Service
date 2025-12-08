@@ -1,9 +1,23 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && npm run generate:swagger",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "public": true,
+  "headers": [
+    {
+      "source": "/public/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    }
+  ],
   "rewrites": [
+    {
+      "source": "/public/:path*",
+      "destination": "/public/:path*"
+    },
     {
       "source": "/(.*)",
       "destination": "/api/[...all]"

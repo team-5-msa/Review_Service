@@ -8,16 +8,37 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui.min.css"
     />
+    <style>
+      html {
+        box-sizing: border-box;
+        overflow: -moz-scrollbars-vertical;
+        overflow-y: scroll;
+      }
+      *,
+      *:before,
+      *:after {
+        box-sizing: inherit;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
   </head>
   <body>
     <div id="swagger-ui"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui-bundle.min.js"></script>
     <script>
-      window.onload = () => {
+      window.onload = function() {
         const spec = {
           url: '/swagger.json',
         };
-        window.ui = SwaggerUIBundle(spec);
+        if (window.SwaggerUIBundle) {
+          window.ui = window.SwaggerUIBundle(spec);
+        } else if (window.SwaggerUIStandalonePreset) {
+          window.ui = SwaggerUIBundle(spec);
+        }
       };
     </script>
   </body>

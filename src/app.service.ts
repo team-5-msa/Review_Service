@@ -1,5 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { firstValueFrom } from 'rxjs';
 import { AppModel } from './entities/review.entity';
@@ -24,22 +29,13 @@ export class AppService {
     private readonly appRepository: Repository<AppModel>,
   ) {}
 
-  async getPerformance(
-    performanceId: number,
-    token: string,
-  ): Promise<PerformanceResponse> {
+  async getPerformance(performanceId: number): Promise<PerformanceResponse> {
     try {
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      console.log('Request headers:', headers);
-      console.log('Token:', token);
-
       const response = await firstValueFrom(
         this.httpService.get<PerformanceResponse>(
           `${process.env.PERFORMANCE_SERVICE_URL}/performances/${performanceId}`,
-          { headers },
         ),
       );
-      console.log('Performance response:', response.data);
 
       return response.data;
     } catch {
@@ -52,9 +48,8 @@ export class AppService {
     rating: number,
     userId: string,
     performanceId: number,
-    token: string,
   ) {
-    const performance = await this.getPerformance(performanceId, token);
+    const performance = await this.getPerformance(performanceId);
     if (!performance) {
       throw new BadRequestException('해당 공연 정보를 찾을 수 없습니다.');
     }
@@ -85,11 +80,11 @@ export class AppService {
     const review = await this.appRepository.findOne({ where: { id } });
 
     if (!review) {
-      throw new BadRequestException('리뷰를 찾을 수 없습니다.');
+      throw new NotFoundException('리뷰를 찾을 수 없습니다.');
     }
 
     if (review.userId !== userId) {
-      throw new BadRequestException('자신의 리뷰만 수정할 수 있습니다.');
+      throw new ForbiddenException('자신의 리뷰만 수정할 수 있습니다.');
     }
 
     review.content = content;
@@ -102,11 +97,11 @@ export class AppService {
     const review = await this.appRepository.findOne({ where: { id } });
 
     if (!review) {
-      throw new BadRequestException('리뷰를 찾을 수 없습니다.');
+      throw new NotFoundException('리뷰를 찾을 수 없습니다.');
     }
 
     if (review.userId !== userId) {
-      throw new BadRequestException('자신의 리뷰만 삭제할 수 있습니다.');
+      throw new ForbiddenException('자신의 리뷰만 삭제할 수 있습니다.');
     }
 
     await this.appRepository.remove(review);

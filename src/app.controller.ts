@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,18 +8,15 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Req,
   UsePipes,
   UseGuards,
   ValidationPipe,
-  BadRequestException,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { AppModel } from './entities/review.entity';
 import { UserGuard } from './guards/user.guard';
-import { extractTokenFromRequest } from './utils/token.util';
+import { GetUserId } from './decorators/get-user-id.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import {
@@ -29,12 +27,6 @@ import {
   ApiGetMyReviews,
 } from './decorators/swagger.decorator';
 
-interface AuthenticatedRequest extends Request {
-  user?: {
-    userId: string;
-  };
-}
-
 @ApiTags('reviews')
 @Controller('reviews')
 @UseGuards(UserGuard)
@@ -44,13 +36,7 @@ export class AppController {
 
   @Get('my')
   @ApiGetMyReviews()
-  getReviews(@Req() request: AuthenticatedRequest) {
-    const userId = request.user?.userId;
-
-    if (!userId) {
-      throw new BadRequestException('사용자 정보를 찾을 수 없습니다.');
-    }
-
+  getReviews(@GetUserId() userId: string) {
     return this.appService.getMyReviews(userId);
   }
 
@@ -58,25 +44,13 @@ export class AppController {
   @ApiCreateReview()
   postReviews(
     @Body() createReviewDto: CreateReviewDto,
-    @Req() request: AuthenticatedRequest,
+    @GetUserId() userId: string,
   ): Promise<AppModel> {
-    const token = extractTokenFromRequest(request);
-    const userId = request.user?.userId;
-
-    if (!userId) {
-      throw new BadRequestException('사용자 정보를 찾을 수 없습니다.');
-    }
-
-    if (!token) {
-      throw new BadRequestException('인증 토큰이 필요합니다.');
-    }
-
     return this.appService.createReview(
       createReviewDto.content,
       createReviewDto.rating,
       userId,
       createReviewDto.performanceId,
-      token,
     );
   }
 
@@ -93,14 +67,8 @@ export class AppController {
   patchReview(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateReviewDto: UpdateReviewDto,
-    @Req() request: AuthenticatedRequest,
+    @GetUserId() userId: string,
   ): Promise<AppModel> {
-    const userId = request.user?.userId;
-
-    if (!userId) {
-      throw new BadRequestException('사용자 정보를 찾을 수 없습니다.');
-    }
-
     if (!updateReviewDto.content || updateReviewDto.rating === undefined) {
       throw new BadRequestException('내용과 평점은 필수입니다.');
     }
@@ -117,14 +85,8 @@ export class AppController {
   @ApiDeleteReview()
   deleteReview(
     @Param('id', ParseIntPipe) id: number,
-    @Req() request: AuthenticatedRequest,
+    @GetUserId() userId: string,
   ): Promise<{ message: string }> {
-    const userId = request.user?.userId;
-
-    if (!userId) {
-      throw new BadRequestException('사용자 정보를 찾을 수 없습니다.');
-    }
-
     return this.appService.deleteReview(id, userId);
   }
 }

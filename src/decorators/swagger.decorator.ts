@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { CreateReviewDto } from '../dto/create-review.dto';
 import { UpdateReviewDto } from '../dto/update-review.dto';
+import { AppModel } from '../entities/review.entity';
 
 export function ApiCreateReview() {
   return applyDecorators(
@@ -22,7 +23,7 @@ export function ApiCreateReview() {
     ApiResponse({
       status: 201,
       description: '리뷰 작성 성공',
-      type: CreateReviewDto,
+      type: AppModel,
     }),
     ApiResponse({
       status: 400,
@@ -49,7 +50,7 @@ export function ApiGetReviewsByPerformance() {
     ApiResponse({
       status: 200,
       description: '리뷰 조회 성공',
-      type: [CreateReviewDto],
+      type: [AppModel],
     }),
     ApiResponse({
       status: 400,
@@ -76,11 +77,19 @@ export function ApiUpdateReview() {
     ApiResponse({
       status: 200,
       description: '리뷰 수정 성공',
-      type: UpdateReviewDto,
+      type: AppModel,
     }),
     ApiResponse({
       status: 400,
       description: '유효하지 않은 요청 또는 권한 없음',
+    }),
+    ApiResponse({
+      status: 403,
+      description: '자신의 리뷰만 수정할 수 있습니다.',
+    }),
+    ApiResponse({
+      status: 404,
+      description: '리뷰를 찾을 수 없습니다.',
     }),
     ApiResponse({
       status: 401,
@@ -107,7 +116,15 @@ export function ApiDeleteReview() {
     }),
     ApiResponse({
       status: 400,
-      description: '리뷰를 찾을 수 없거나 권한 없음',
+      description: '유효하지 않은 요청 또는 권한 없음',
+    }),
+    ApiResponse({
+      status: 403,
+      description: '자신의 리뷰만 삭제할 수 있습니다.',
+    }),
+    ApiResponse({
+      status: 404,
+      description: '리뷰를 찾을 수 없습니다.',
     }),
     ApiResponse({
       status: 401,
@@ -126,7 +143,7 @@ export function ApiGetMyReviews() {
     ApiResponse({
       status: 200,
       description: '리뷰 조회 성공',
-      type: [CreateReviewDto],
+      type: [AppModel],
     }),
     ApiResponse({
       status: 401,

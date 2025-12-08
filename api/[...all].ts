@@ -16,11 +16,9 @@ async function initializeApp(): Promise<Application> {
 
   const expressApp = express();
 
-  // Serve static files from public directory
   const publicDir = path.join(__dirname, '..', 'public');
   expressApp.use(express.static(publicDir));
 
-  // Manual handling for swagger files
   expressApp.get('/swagger-ui.html', (req, res) => {
     const filePath = path.join(publicDir, 'swagger-ui.html');
     if (fs.existsSync(filePath)) {
@@ -59,7 +57,6 @@ export default async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
-  // Strip /api prefix if present
   if (req.url.startsWith('/api')) {
     req.url = req.url.slice(4) || '/';
   }

@@ -13,7 +13,7 @@ export class AppModel {
   id: number;
 
   @Column()
-  userId?: string;
+  userId: string;
 
   @Column()
   performanceId: number;

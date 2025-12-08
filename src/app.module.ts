@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
 import { AppModel } from './entities/review.entity';
+import { UserGuard } from './guards/user.guard';
 import databaseConfig from './config/database.config';
 
 @Module({
@@ -19,6 +20,6 @@ import databaseConfig from './config/database.config';
     HttpModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UserGuard],
 })
 export class AppModule {}

@@ -18,13 +18,11 @@ async function generateSwaggerJson() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  // public 디렉토리 생성
   const publicDir = path.join(process.cwd(), 'public');
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
   }
 
-  // swagger.json 저장
   const swaggerPath = path.join(publicDir, 'swagger.json');
   fs.writeFileSync(swaggerPath, JSON.stringify(document, null, 2));
   console.log(`✅ Swagger JSON generated at ${swaggerPath}`);

@@ -5,27 +5,36 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { AppService } from '../app.service';
+
+declare module 'express' {
+  interface Request {
+    user?: { userId: string };
+  }
+}
 
 @Injectable()
 export class UserGuard implements CanActivate {
-  constructor(private readonly appService: AppService) {}
-
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<any>();
-    const authHeader = request.headers['authorization'];
+    const request = context.switchToHttp().getRequest<Request>();
 
-    if (!authHeader) {
-      throw new UnauthorizedException('인증 토큰이 존재하지 않습니다.');
+    // Get userId from x-user-id header (added by API Gateway/프록시)
+    // 프록시가 JWT를 검증하고 userId를 추가하므로 신뢰할 수 있음
+    const userIdFromHeader = request.headers['x-user-id'];
+
+    if (!userIdFromHeader) {
+      throw new UnauthorizedException(
+        '인증이 필요합니다. x-user-id 헤더를 제공하세요.',
+      );
     }
 
-    // Extract token from "Bearer <token>" format
-    const token = authHeader.replace('Bearer ', '');
+    const userId = String(userIdFromHeader).trim();
 
-    // For now, set userId from token (in production, verify JWT)
-    // This is a simplified version - in production, decode and verify the JWT
+    if (!userId) {
+      throw new UnauthorizedException('유효한 userId가 필요합니다.');
+    }
+
     request.user = {
-      userId: token, // Use token as userId for testing
+      userId,
     };
 
     return true;

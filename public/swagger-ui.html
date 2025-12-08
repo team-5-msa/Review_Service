@@ -33,11 +33,8 @@
         window.ui = SwaggerUIBundle({
           url: '/swagger.json',
           dom_id: '#swagger-ui',
-          presets: [
-            SwaggerUIBundle.presets.apis,
-            SwaggerUIBundle.SwaggerUIStandalonePreset,
-          ],
-          layout: 'StandaloneLayout',
+          presets: [SwaggerUIBundle.presets.apis],
+          deepLinking: true,
         });
       };
     </script>

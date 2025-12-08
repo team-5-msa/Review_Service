@@ -42,6 +42,18 @@ interface AuthenticatedRequest extends Request {
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get('my')
+  @ApiGetMyReviews()
+  getReviews(@Req() request: AuthenticatedRequest) {
+    const userId = request.user?.userId;
+
+    if (!userId) {
+      throw new BadRequestException('사용자 정보를 찾을 수 없습니다.');
+    }
+
+    return this.appService.getMyReviews(userId);
+  }
+
   @Post()
   @ApiCreateReview()
   postReviews(
@@ -114,17 +126,5 @@ export class AppController {
     }
 
     return this.appService.deleteReview(id, userId);
-  }
-
-  @Get('my')
-  @ApiGetMyReviews()
-  getReviews(@Req() request: AuthenticatedRequest) {
-    const userId = request.user?.userId;
-
-    if (!userId) {
-      throw new BadRequestException('사용자 정보를 찾을 수 없습니다.');
-    }
-
-    return this.appService.getMyReviews(userId);
   }
 }

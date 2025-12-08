@@ -51,8 +51,6 @@ async function initializeApp(): Promise<Application> {
     credentials: true,
   });
 
-  cachedApp.setGlobalPrefix('api');
-
   await cachedApp.init();
   return expressApp;
 }
@@ -61,6 +59,11 @@ export default async (
   req: express.Request,
   res: express.Response,
 ): Promise<void> => {
+  // Strip /api prefix if present
+  if (req.url.startsWith('/api')) {
+    req.url = req.url.slice(4) || '/';
+  }
+
   const expressApp = await initializeApp();
   expressApp(req, res);
 };

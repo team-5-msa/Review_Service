@@ -1,6 +1,40 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/reviews/my": {
+      "get": {
+        "description": "로그인한 사용자가 작성한 모든 리뷰를 조회합니다.",
+        "operationId": "AppController_getReviews",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "리뷰 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreateReviewDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization 헤더 필요"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "내 리뷰 조회",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
     "/reviews": {
       "post": {
         "description": "새로운 리뷰를 작성합니다.",
@@ -171,40 +205,6 @@
           }
         ],
         "summary": "리뷰 삭제",
-        "tags": [
-          "reviews"
-        ]
-      }
-    },
-    "/reviews/my": {
-      "get": {
-        "description": "로그인한 사용자가 작성한 모든 리뷰를 조회합니다.",
-        "operationId": "AppController_getReviews",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "리뷰 조회 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CreateReviewDto"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authorization 헤더 필요"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "내 리뷰 조회",
         "tags": [
           "reviews"
         ]

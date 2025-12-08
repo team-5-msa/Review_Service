@@ -2,21 +2,16 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "headers": [
-    {
-      "source": "/public/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        }
-      ]
-    }
-  ],
+  "public": true,
+  "cleanUrls": false,
   "rewrites": [
     {
-      "source": "/public/:path*",
-      "destination": "/public/:path*"
+      "source": "/swagger-ui.html",
+      "destination": "/public/swagger-ui.html"
+    },
+    {
+      "source": "/swagger.json",
+      "destination": "/public/swagger.json"
     },
     {
       "source": "/(.*)",

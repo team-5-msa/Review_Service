@@ -10,26 +10,24 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // API 경로 프리픽스 설정
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('Review Service API')
     .setDescription('The Review Service API for performance reviews')
     .setVersion('1.0.0')
     .addBearerAuth()
-    .addServer(
-      process.env.NODE_ENV === 'production'
-        ? `https://${process.env.VERCEL_URL || process.env.API_URL || 'localhost:3000'}`
-        : 'http://localhost:3000',
-      process.env.NODE_ENV === 'production' ? 'Production' : 'Development',
-    )
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  // Swagger 경로를 /api/docs로 설정 (Vercel 호환)
+  SwaggerModule.setup('docs', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000, () => {
-    console.log(
-      `Review Service running on ${process.env.PORT ?? 3000} with Swagger at /api`,
-    );
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0', () => {
+    console.log(`Review Service running on port ${port}`);
+    console.log(`API Documentation: http://localhost:${port}/api/docs`);
   });
 }
 

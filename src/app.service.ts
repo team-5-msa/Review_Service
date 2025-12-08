@@ -60,7 +60,6 @@ export class AppService {
     return await this.appRepository.save(review);
   }
 
-  // GET /reviews/performance/:performanceId: 특정 공연의 리뷰 목록
   async getReviewsByPerformance(performanceId: number) {
     return await this.appRepository.find({
       where: { performanceId },
@@ -68,7 +67,6 @@ export class AppService {
     });
   }
 
-  // PUT /reviews/:id: 내 리뷰 수정 (로그인 필요)
   async updateReview(
     id: number,
     userId: string,
@@ -91,7 +89,6 @@ export class AppService {
     return await this.appRepository.save(review);
   }
 
-  // DELETE /reviews/:id: 내 리뷰 삭제 (로그인 필요)
   async deleteReview(id: number, userId: string) {
     const review = await this.appRepository.findOne({ where: { id } });
 
@@ -107,7 +104,6 @@ export class AppService {
     return { message: '리뷰가 삭제되었습니다.' };
   }
 
-  // GET /reviews/my: 내가 작성한 리뷰 목록 (로그인 필요)
   async getMyReviews(userId: string) {
     return await this.appRepository.find({
       where: { userId },

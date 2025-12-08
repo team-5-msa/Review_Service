@@ -1,0 +1,291 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/reviews": {
+      "post": {
+        "description": "새로운 리뷰를 작성합니다.",
+        "operationId": "AppController_postReviews",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "리뷰 작성 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateReviewDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "잘못된 요청 - 필수 필드 누락 또는 유효성 검사 실패"
+          },
+          "401": {
+            "description": "Authorization 헤더 필요"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "리뷰 작성",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/reviews/performance/{performanceId}": {
+      "get": {
+        "description": "특정 공연의 모든 리뷰를 조회합니다.",
+        "operationId": "AppController_getPerformanceReviews",
+        "parameters": [
+          {
+            "name": "performanceId",
+            "required": true,
+            "in": "path",
+            "description": "공연 ID",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "리뷰 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreateReviewDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효하지 않은 공연 ID"
+          }
+        },
+        "summary": "공연별 리뷰 조회",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/reviews/{id}": {
+      "patch": {
+        "description": "자신의 리뷰를 수정합니다.",
+        "operationId": "AppController_patchReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "리뷰 ID",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "리뷰 수정 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateReviewDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "유효하지 않은 요청 또는 권한 없음"
+          },
+          "401": {
+            "description": "Authorization 헤더 필요"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "리뷰 수정",
+        "tags": [
+          "reviews"
+        ]
+      },
+      "delete": {
+        "description": "자신의 리뷰를 삭제합니다.",
+        "operationId": "AppController_deleteReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "리뷰 ID",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "리뷰 삭제 성공"
+          },
+          "400": {
+            "description": "리뷰를 찾을 수 없거나 권한 없음"
+          },
+          "401": {
+            "description": "Authorization 헤더 필요"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "리뷰 삭제",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/reviews/my": {
+      "get": {
+        "description": "로그인한 사용자가 작성한 모든 리뷰를 조회합니다.",
+        "operationId": "AppController_getReviews",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "리뷰 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreateReviewDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization 헤더 필요"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "내 리뷰 조회",
+        "tags": [
+          "reviews"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Review Service API",
+    "description": "The Review Service API for performance reviews",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "https://review-service-zeta.vercel.app",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Development"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreateReviewDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "리뷰 내용",
+            "example": "정말 감동적인 공연이었습니다!"
+          },
+          "rating": {
+            "type": "number",
+            "description": "평점 (1~5)",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 5
+          },
+          "performanceId": {
+            "type": "number",
+            "description": "공연 ID",
+            "example": 1
+          }
+        },
+        "required": [
+          "content",
+          "rating",
+          "performanceId"
+        ]
+      },
+      "UpdateReviewDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "리뷰 내용",
+            "example": "정말 감동적인 공연이었습니다!"
+          },
+          "rating": {
+            "type": "number",
+            "description": "평점 (1~5)",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 5
+          },
+          "performanceId": {
+            "type": "number",
+            "description": "공연 ID",
+            "example": 1
+          }
+        }
+      }
+    }
+  }
+}

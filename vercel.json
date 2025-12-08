@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build && npm run generate:swagger",
   "outputDirectory": "dist",
   "public": true,
   "rewrites": [

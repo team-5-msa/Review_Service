@@ -19,8 +19,8 @@ export class AppModel {
   performanceId: number;
 
   @Column()
-  @Min(1, { message: '평점은 최소 1점 이상이어야 합니다.' })
-  @Max(5, { message: '평점은 최대 5점 이하여야 합니다.' })
+  @Min(1)
+  @Max(5)
   rating: number;
 
   @Column()

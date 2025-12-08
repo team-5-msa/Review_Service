@@ -5,6 +5,17 @@ import { firstValueFrom } from 'rxjs';
 import { AppModel } from './entities/review.entity';
 import { Repository } from 'typeorm';
 
+interface PerformanceResponse {
+  id: number;
+  title: string;
+  description?: string;
+  startDate: string;
+  endDate: string;
+  venue?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 @Injectable()
 export class AppService {
   constructor(
@@ -13,14 +24,17 @@ export class AppService {
     private readonly appRepository: Repository<AppModel>,
   ) {}
 
-  async getPerformance(performanceId: number, token: string) {
+  async getPerformance(
+    performanceId: number,
+    token: string,
+  ): Promise<PerformanceResponse> {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       console.log('Request headers:', headers);
       console.log('Token:', token);
 
       const response = await firstValueFrom(
-        this.httpService.get(
+        this.httpService.get<PerformanceResponse>(
           `${process.env.PERFORMANCE_SERVICE_URL}/performances/${performanceId}`,
           { headers },
         ),
@@ -28,16 +42,11 @@ export class AppService {
       console.log('Performance response:', response.data);
 
       return response.data;
-    } catch (error) {
-      console.error(
-        'Performance Service Error:',
-        error.response?.data || error.message,
-      );
+    } catch {
       throw new BadRequestException('공연 정보 조회에 실패했습니다.');
     }
   }
 
-  // POST /reviews: 리뷰 작성 (로그인 필요)
   async createReview(
     content: string,
     rating: number,

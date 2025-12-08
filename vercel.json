@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "env": [
+    "NODE_ENV",
+    "PORT",
+    "API_URL",
+    "DB_HOST",
+    "DB_PORT",
+    "DB_USERNAME",
+    "DB_PASSWORD",
+    "DB_DATABASE",
+    "PERFORMANCE_SERVICE_URL"
+  ]
+}

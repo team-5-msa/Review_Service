@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Review Service API Documentation</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui.min.css"
+    />
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui.min.js"></script>
+    <script>
+      window.onload = () => {
+        const spec = {
+          url: '/swagger.json',
+        };
+        window.ui = SwaggerUIBundle(spec);
+      };
+    </script>
+  </body>
+</html>

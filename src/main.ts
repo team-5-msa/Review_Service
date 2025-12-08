@@ -13,6 +13,7 @@ async function bootstrap() {
   // API 경로 프리픽스 설정
   app.setGlobalPrefix('api');
 
+  // 로컬 개발 환경에서만 Swagger UI 활성화
   const config = new DocumentBuilder()
     .setTitle('Review Service API')
     .setDescription('The Review Service API for performance reviews')
@@ -21,8 +22,7 @@ async function bootstrap() {
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  // Swagger 경로를 /api/docs로 설정 (Vercel 호환)
-  SwaggerModule.setup('docs', app, documentFactory);
+  SwaggerModule.setup('api/docs', app, documentFactory);
 
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0', () => {

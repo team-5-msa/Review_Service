@@ -17,6 +17,7 @@ import { AppService } from './app.service';
 import { AppModel } from './entities/review.entity';
 import { UserGuard } from './guards/user.guard';
 import { GetUserId } from './decorators/get-user-id.decorator';
+import { GetToken } from './decorators/get-token.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import {
@@ -45,12 +46,14 @@ export class AppController {
   postReviews(
     @Body() createReviewDto: CreateReviewDto,
     @GetUserId() userId: string,
+    @GetToken() token: string,
   ): Promise<AppModel> {
     return this.appService.createReview(
       createReviewDto.content,
       createReviewDto.rating,
       userId,
       createReviewDto.performanceId,
+      token,
     );
   }
 

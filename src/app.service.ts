@@ -31,15 +31,31 @@ export class AppService {
 
   async getPerformance(performanceId: number): Promise<PerformanceResponse> {
     try {
+      const url = `${process.env.PERFORMANCE_SERVICE_API}/${performanceId}`;
+
       const response = await firstValueFrom(
-        this.httpService.get<PerformanceResponse>(
-          `${process.env.PERFORMANCE_SERVICE_URL}/performances/${performanceId}`,
-        ),
+        this.httpService.get<PerformanceResponse>(url),
       );
 
       return response.data;
-    } catch {
-      throw new BadRequestException('공연 정보 조회에 실패했습니다.');
+    } catch (error: any) {
+      console.error('Performance API Error:', error.response?.data);
+
+      // PerformanceService의 에러 응답 전달
+      if (error.response?.status === 403) {
+        throw new ForbiddenException(
+          error.response?.data?.message || '공연에 접근할 권한이 없습니다.',
+        );
+      }
+
+      if (error.response?.status === 404) {
+        throw new NotFoundException('공연을 찾을 수 없습니다.');
+      }
+
+      // 기타 에러는 원본 메시지 전달
+      throw new BadRequestException(
+        error.response?.data?.message || '공연 정보 조회에 실패했습니다.',
+      );
     }
   }
 

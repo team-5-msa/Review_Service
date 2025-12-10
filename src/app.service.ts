@@ -32,11 +32,18 @@ export class AppService {
   async getPerformance(
     performanceId: number,
     token?: string,
+    userId?: string,
   ): Promise<PerformanceResponse> {
     try {
       const url = `${process.env.PERFORMANCE_SERVICE_API}/${performanceId}`;
 
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      if (userId) {
+        headers['x-user-id'] = userId;
+      }
 
       const response = await firstValueFrom(
         this.httpService.get<PerformanceResponse>(url, { headers }),
@@ -72,7 +79,7 @@ export class AppService {
     token?: string,
   ) {
     // getPerformance는 exception을 throw하므로, 여기 도달하면 performance 존재
-    const performance = await this.getPerformance(performanceId, token);
+    const performance = await this.getPerformance(performanceId, token, userId);
 
     console.log('performance', performance);
 

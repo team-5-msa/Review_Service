@@ -29,12 +29,22 @@ export class AppService {
     private readonly appRepository: Repository<AppModel>,
   ) {}
 
-  async getPerformance(performanceId: number): Promise<PerformanceResponse> {
+  async getPerformance(
+    performanceId: number,
+    token?: string,
+  ): Promise<PerformanceResponse> {
     try {
       const url = `${process.env.PERFORMANCE_SERVICE_API}/${performanceId}`;
 
+      console.log('Token received:', token);
+      console.log('API URL:', url);
+
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+      console.log('Request headers:', headers);
+
       const response = await firstValueFrom(
-        this.httpService.get<PerformanceResponse>(url),
+        this.httpService.get<PerformanceResponse>(url, { headers }),
       );
 
       return response.data;
@@ -64,11 +74,12 @@ export class AppService {
     rating: number,
     userId: string,
     performanceId: number,
+    token?: string,
   ) {
-    const performance = await this.getPerformance(performanceId);
-    if (!performance) {
-      throw new BadRequestException('해당 공연 정보를 찾을 수 없습니다.');
-    }
+    // getPerformance는 exception을 throw하므로, 여기 도달하면 performance 존재
+    const performance = await this.getPerformance(performanceId, token);
+
+    console.log('performance', performance);
 
     const review = this.appRepository.create({
       content,

@@ -45,13 +45,30 @@ export class AppService {
         headers['x-user-id'] = userId;
       }
 
+      console.log('🚀 Performance API 호출:', {
+        url,
+        headers: {
+          ...headers,
+          Authorization: headers['Authorization'] ? '***' : undefined,
+        },
+      });
+
       const response = await firstValueFrom(
         this.httpService.get<PerformanceResponse>(url, { headers }),
       );
 
       return response.data;
     } catch (error: any) {
-      console.error('Performance API Error:', error.response?.data);
+      console.error('❌ Performance API Error:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+        config: {
+          url: error.config?.url,
+          method: error.config?.method,
+          headers: error.config?.headers,
+        },
+      });
 
       // PerformanceService의 에러 응답 전달
       if (error.response?.status === 403) {
@@ -78,6 +95,12 @@ export class AppService {
     performanceId: number,
     token?: string,
   ) {
+    console.log('📝 리뷰 작성 시작:', {
+      userId,
+      performanceId,
+      token: token ? '있음' : '없음',
+    });
+
     // getPerformance는 exception을 throw하므로, 여기 도달하면 performance 존재
     const performance = await this.getPerformance(performanceId, token, userId);
 
